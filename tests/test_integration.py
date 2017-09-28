@@ -13,7 +13,9 @@ from django.template.loader import get_template
 from django.test import RequestFactory, TestCase
 from django.test.utils import override_settings
 
-from debug_toolbar.middleware import DebugToolbarMiddleware, show_toolbar
+from debug_toolbar.middleware import (
+    DebugToolbarMiddleware, defaultshow_toolbar
+)
 from debug_toolbar.toolbar import DebugToolbar
 
 from .base import BaseTestCase
@@ -32,16 +34,16 @@ rf = RequestFactory()
 
 @override_settings(DEBUG=True)
 class DebugToolbarTestCase(BaseTestCase):
-    def test_show_toolbar(self):
-        self.assertTrue(show_toolbar(self.request))
+    def test_default_show_toolbar(self):
+        self.assertTrue(default_show_toolbar(self.request))
 
-    def test_show_toolbar_DEBUG(self):
+    def test_default_show_toolbar_DEBUG(self):
         with self.settings(DEBUG=False):
-            self.assertFalse(show_toolbar(self.request))
+            self.assertFalse(default_show_toolbar(self.request))
 
-    def test_show_toolbar_INTERNAL_IPS(self):
+    def test_default_show_toolbar_INTERNAL_IPS(self):
         with self.settings(INTERNAL_IPS=[]):
-            self.assertFalse(show_toolbar(self.request))
+            self.assertFalse(default_show_toolbar(self.request))
 
     def _resolve_stats(self, path):
         # takes stats from Request panel

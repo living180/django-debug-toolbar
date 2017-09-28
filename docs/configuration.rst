@@ -101,7 +101,7 @@ Toolbar options
 
 * ``SHOW_TOOLBAR_CALLBACK``
 
-  Default: ``'debug_toolbar.middleware.show_toolbar'``
+  Default: ``'debug_toolbar.middleware.default_show_toolbar'``
 
   This is the dotted path to a function used for determining whether the
   toolbar should show or not. The default checks are that ``DEBUG`` must be set

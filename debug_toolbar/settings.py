@@ -21,7 +21,7 @@ CONFIG_DEFAULTS = {
     "RESULTS_CACHE_SIZE": 10,
     "ROOT_TAG_EXTRA_ATTRS": "",
     "SHOW_COLLAPSED": False,
-    "SHOW_TOOLBAR_CALLBACK": "debug_toolbar.middleware.show_toolbar",
+    "SHOW_TOOLBAR_CALLBACK": "debug_toolbar.middleware.default_show_toolbar",
     # Panel options
     "EXTRA_SIGNALS": [],
     "ENABLE_STACKTRACES": True,

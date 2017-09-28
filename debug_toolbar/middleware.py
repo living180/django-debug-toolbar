@@ -20,7 +20,7 @@ from debug_toolbar.toolbar import DebugToolbar
 _HTML_TYPES = ("text/html", "application/xhtml+xml")
 
 
-def show_toolbar(request):
+def default_show_toolbar(request):
     """
     Default function to determine whether to show the toolbar on a given page.
     """
