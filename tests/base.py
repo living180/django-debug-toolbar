@@ -9,11 +9,11 @@ from django.test import RequestFactory, TestCase
 from debug_toolbar.middleware import DebugToolbarMiddleware
 from debug_toolbar.toolbar import DebugToolbar
 
-rf = RequestFactory()
-
 
 class BaseTestCase(TestCase):
     def setUp(self):
+        rf = RequestFactory()
+
         request = rf.get("/")
         response = HttpResponse()
         toolbar = DebugToolbar(request)
@@ -22,6 +22,7 @@ class BaseTestCase(TestCase):
             threading.current_thread().ident
         ] = toolbar
 
+        self.rf = rf
         self.request = request
         self.response = response
         self.toolbar = toolbar
