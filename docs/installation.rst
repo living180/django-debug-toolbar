@@ -91,7 +91,7 @@ Old-style middleware::
 Internal IPs
 ------------
 
-The Debug Toolbar is shown only if your IP is listed in the ``INTERNAL_IPS``
-setting. (You can change this logic with the ``SHOW_TOOLBAR_CALLBACK``
+The Debug Toolbar is enabled only if your IP is listed in the ``INTERNAL_IPS``
+setting. (You can change this logic with the ``ALLOW_TOOLBAR_CALLBACK``
 option.) For local development, you should add ``'127.0.0.1'`` to
 ``INTERNAL_IPS``.

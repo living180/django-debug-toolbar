@@ -99,20 +99,25 @@ Toolbar options
 
   If changed to ``True``, the toolbar will be collapsed by default.
 
+* ``ALLOW_TOOLBAR_CALLBACK``
+
+  Default: 'debug_toolbar.middleware.default_allow_toolbar'
+
+  This is the dotted path to a function used for determining whether the
+  toolbar should be allowed for a given request or not. The default checks are
+  that ``DEBUG`` must be set to ``True`` and the IP of the request must be in
+  ``INTERNAL_IPS``. You can provide your own function ``callback(request)``
+  which returns ``True`` or ``False``.
+
 * ``SHOW_TOOLBAR_CALLBACK``
 
   Default: ``'debug_toolbar.middleware.default_show_toolbar'``
 
   This is the dotted path to a function used for determining whether the
-  toolbar should show or not. The default checks are that ``DEBUG`` must be set
-  to ``True`` and the IP of the request must be in ``INTERNAL_IPS``. You can
-  provide your own function ``callback(request)`` which returns ``True`` or
-  ``False``.
-
-  For versions < 1.8, the callback should also return ``False`` for AJAX
-  requests. Since version 1.8, AJAX requests are checked in the middleware, not
-  the callback. This allows reusing the callback to verify access to panel
-  views requested via AJAX.
+  toolbar should show or not. The default checks are that the callback defined
+  by ``ALLOW_TOOLBAR_CALLBACK`` must return True and the request must not be an
+  AJAX request.  You can provide your own function ``callback(request)`` which
+  returns ``True`` or ``False``.
 
 Panel options
 ~~~~~~~~~~~~~

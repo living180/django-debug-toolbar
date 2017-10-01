@@ -20,14 +20,36 @@ from debug_toolbar.toolbar import DebugToolbar
 _HTML_TYPES = ("text/html", "application/xhtml+xml")
 
 
-def default_show_toolbar(request):
+def default_allow_toolbar(request):
     """
-    Default function to determine whether to show the toolbar on a given page.
+    Default function to determine whether to allow the toolbar to be used.
     """
     if request.META.get("REMOTE_ADDR", None) not in settings.INTERNAL_IPS:
         return False
 
     return bool(settings.DEBUG)
+
+
+@lru_cache()
+def get_allow_toolbar():
+    # If ALLOW_TOOLBAR_CALLBACK is a string, which is the recommended
+    # setup, resolve it to the corresponding callable.
+    func_or_path = dt_settings.get_config()['ALLOW_TOOLBAR_CALLBACK']
+    if isinstance(func_or_path, six.string_types):
+        return import_string(func_or_path)
+    else:
+        return func_or_path
+
+
+def default_show_toolbar(request):
+    """
+    Default function to determine whether to show the toolbar on a given page.
+    """
+    allow_toolbar = get_allow_toolbar()
+    if not allow_toolbar(request):
+        return False
+
+    return not request.is_ajax()
 
 
 @lru_cache()
@@ -53,10 +75,6 @@ class DebugToolbarMiddleware(MiddlewareMixin):
         # Decide whether the toolbar is active for this request.
         show_toolbar = get_show_toolbar()
         if not show_toolbar(request):
-            return
-
-        # Don't render the toolbar during AJAX requests.
-        if request.is_ajax():
             return
 
         toolbar = DebugToolbar(request)

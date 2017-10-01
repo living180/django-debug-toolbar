@@ -4,12 +4,12 @@ from django.http import HttpResponseBadRequest
 from django.template.response import SimpleTemplateResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from debug_toolbar.decorators import require_show_toolbar
+from debug_toolbar.decorators import require_allow_toolbar
 from debug_toolbar.panels.sql.forms import SQLSelectForm
 
 
 @csrf_exempt
-@require_show_toolbar
+@require_allow_toolbar
 def sql_select(request):
     """Returns the output of the SQL SELECT statement"""
     form = SQLSelectForm(request.POST or None)
@@ -35,7 +35,7 @@ def sql_select(request):
 
 
 @csrf_exempt
-@require_show_toolbar
+@require_allow_toolbar
 def sql_explain(request):
     """Returns the output of the SQL EXPLAIN on the given query"""
     form = SQLSelectForm(request.POST or None)
@@ -72,7 +72,7 @@ def sql_explain(request):
 
 
 @csrf_exempt
-@require_show_toolbar
+@require_allow_toolbar
 def sql_profile(request):
     """Returns the output of running the SQL and getting the profiling statistics"""
     form = SQLSelectForm(request.POST or None)

@@ -119,7 +119,7 @@ class DebugToolbarIntegrationTestCase(TestCase):
             msg = self._formatMessage(None, "\n".join(default_msg))
             raise self.failureException(msg)
 
-    def test_render_panel_checks_show_toolbar(self):
+    def test_render_panel_checks_allow_toolbar(self):
         toolbar = DebugToolbar(None)
         toolbar.store()
         url = "/__debug__/render_panel/"
@@ -129,7 +129,9 @@ class DebugToolbarIntegrationTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         response = self.client.get(url, data, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
         self.assertEqual(response.status_code, 200)
-        with self.settings(INTERNAL_IPS=[]):
+        with self.settings(DEBUG_TOOLBAR_CONFIG={
+            'ALLOW_TOOLBAR_CALLBACK': lambda request: False,
+        }):
             response = self.client.get(url, data)
             self.assertEqual(response.status_code, 404)
             response = self.client.get(
@@ -137,7 +139,7 @@ class DebugToolbarIntegrationTestCase(TestCase):
             )
             self.assertEqual(response.status_code, 404)
 
-    def test_template_source_checks_show_toolbar(self):
+    def test_template_source_checks_allow_toolbar(self):
         template = get_template("basic.html")
         url = "/__debug__/template_source/"
         data = {
@@ -149,7 +151,9 @@ class DebugToolbarIntegrationTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         response = self.client.get(url, data, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
         self.assertEqual(response.status_code, 200)
-        with self.settings(INTERNAL_IPS=[]):
+        with self.settings(DEBUG_TOOLBAR_CONFIG={
+            'ALLOW_TOOLBAR_CALLBACK': lambda request: False,
+        }):
             response = self.client.get(url, data)
             self.assertEqual(response.status_code, 404)
             response = self.client.get(
@@ -157,7 +161,7 @@ class DebugToolbarIntegrationTestCase(TestCase):
             )
             self.assertEqual(response.status_code, 404)
 
-    def test_sql_select_checks_show_toolbar(self):
+    def test_sql_select_checks_allow_toolbar(self):
         url = "/__debug__/sql_select/"
         data = {
             "sql": "SELECT * FROM auth_user",
@@ -172,7 +176,9 @@ class DebugToolbarIntegrationTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         response = self.client.post(url, data, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
         self.assertEqual(response.status_code, 200)
-        with self.settings(INTERNAL_IPS=[]):
+        with self.settings(DEBUG_TOOLBAR_CONFIG={
+            'ALLOW_TOOLBAR_CALLBACK': lambda request: False,
+        }):
             response = self.client.post(url, data)
             self.assertEqual(response.status_code, 404)
             response = self.client.post(
@@ -180,7 +186,7 @@ class DebugToolbarIntegrationTestCase(TestCase):
             )
             self.assertEqual(response.status_code, 404)
 
-    def test_sql_explain_checks_show_toolbar(self):
+    def test_sql_explain_checks_allow_toolbar(self):
         url = "/__debug__/sql_explain/"
         data = {
             "sql": "SELECT * FROM auth_user",
@@ -195,7 +201,9 @@ class DebugToolbarIntegrationTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         response = self.client.post(url, data, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
         self.assertEqual(response.status_code, 200)
-        with self.settings(INTERNAL_IPS=[]):
+        with self.settings(DEBUG_TOOLBAR_CONFIG={
+            'ALLOW_TOOLBAR_CALLBACK': lambda request: False,
+        }):
             response = self.client.post(url, data)
             self.assertEqual(response.status_code, 404)
             response = self.client.post(
@@ -203,7 +211,7 @@ class DebugToolbarIntegrationTestCase(TestCase):
             )
             self.assertEqual(response.status_code, 404)
 
-    def test_sql_profile_checks_show_toolbar(self):
+    def test_sql_profile_checks_allow_toolbar(self):
         url = "/__debug__/sql_profile/"
         data = {
             "sql": "SELECT * FROM auth_user",
@@ -218,7 +226,9 @@ class DebugToolbarIntegrationTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         response = self.client.post(url, data, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
         self.assertEqual(response.status_code, 200)
-        with self.settings(INTERNAL_IPS=[]):
+        with self.settings(DEBUG_TOOLBAR_CONFIG={
+            'ALLOW_TOOLBAR_CALLBACK': lambda request: False,
+        }):
             response = self.client.post(url, data)
             self.assertEqual(response.status_code, 404)
             response = self.client.post(

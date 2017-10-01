@@ -7,10 +7,10 @@ from django.template.engine import Engine
 from django.template.response import SimpleTemplateResponse
 from django.utils.safestring import mark_safe
 
-from debug_toolbar.decorators import require_show_toolbar
+from debug_toolbar.decorators import require_allow_toolbar
 
 
-@require_show_toolbar
+@require_allow_toolbar
 def template_source(request):
     """
     Return the source of a template, syntax-highlighted by Pygments if
