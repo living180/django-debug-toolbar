@@ -119,25 +119,28 @@ class DebugToolbarIntegrationTestCase(TestCase):
             msg = self._formatMessage(None, "\n".join(default_msg))
             raise self.failureException(msg)
 
-    def test_render_panel_checks_allow_toolbar(self):
-        toolbar = DebugToolbar(None)
-        toolbar.store()
-        url = "/__debug__/render_panel/"
-        data = {"store_id": toolbar.store_id, "panel_id": "VersionsPanel"}
-
-        response = self.client.get(url, data)
+    def check_require_allow_toolbar(self, client_method, url, data):
+        response = client_method(url, data)
         self.assertEqual(response.status_code, 200)
-        response = self.client.get(url, data, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
+        response = client_method(url, data,
+                HTTP_X_REQUESTED_WITH="XMLHttpRequest")
         self.assertEqual(response.status_code, 200)
         with self.settings(DEBUG_TOOLBAR_CONFIG={
             'ALLOW_TOOLBAR_CALLBACK': lambda request: False,
         }):
-            response = self.client.get(url, data)
+            response = client_method(url, data)
             self.assertEqual(response.status_code, 404)
-            response = self.client.get(
-                url, data, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
-            )
+            response = client_method(url, data,
+                    HTTP_X_REQUESTED_WITH="XMLHttpRequest")
             self.assertEqual(response.status_code, 404)
+
+    def test_render_panel_checks_allow_toolbar(self):
+        toolbar = DebugToolbar(None)
+        toolbar.store()
+        url = '/__debug__/render_panel/'
+        data = {'store_id': toolbar.store_id, 'panel_id': 'VersionsPanel'}
+
+        self.check_require_allow_toolbar(self.client.get, url, data)
 
     def test_template_source_checks_allow_toolbar(self):
         template = get_template("basic.html")
@@ -147,19 +150,7 @@ class DebugToolbarIntegrationTestCase(TestCase):
             "template_origin": signing.dumps(template.template.origin.name),
         }
 
-        response = self.client.get(url, data)
-        self.assertEqual(response.status_code, 200)
-        response = self.client.get(url, data, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
-        self.assertEqual(response.status_code, 200)
-        with self.settings(DEBUG_TOOLBAR_CONFIG={
-            'ALLOW_TOOLBAR_CALLBACK': lambda request: False,
-        }):
-            response = self.client.get(url, data)
-            self.assertEqual(response.status_code, 404)
-            response = self.client.get(
-                url, data, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
-            )
-            self.assertEqual(response.status_code, 404)
+        self.check_require_allow_toolbar(self.client.get, url, data)
 
     def test_sql_select_checks_allow_toolbar(self):
         url = "/__debug__/sql_select/"
@@ -172,19 +163,7 @@ class DebugToolbarIntegrationTestCase(TestCase):
             "hash": "6e12daa636b8c9a8be993307135458f90a877606",
         }
 
-        response = self.client.post(url, data)
-        self.assertEqual(response.status_code, 200)
-        response = self.client.post(url, data, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
-        self.assertEqual(response.status_code, 200)
-        with self.settings(DEBUG_TOOLBAR_CONFIG={
-            'ALLOW_TOOLBAR_CALLBACK': lambda request: False,
-        }):
-            response = self.client.post(url, data)
-            self.assertEqual(response.status_code, 404)
-            response = self.client.post(
-                url, data, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
-            )
-            self.assertEqual(response.status_code, 404)
+        self.check_require_allow_toolbar(self.client.post, url, data)
 
     def test_sql_explain_checks_allow_toolbar(self):
         url = "/__debug__/sql_explain/"
@@ -197,19 +176,7 @@ class DebugToolbarIntegrationTestCase(TestCase):
             "hash": "6e12daa636b8c9a8be993307135458f90a877606",
         }
 
-        response = self.client.post(url, data)
-        self.assertEqual(response.status_code, 200)
-        response = self.client.post(url, data, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
-        self.assertEqual(response.status_code, 200)
-        with self.settings(DEBUG_TOOLBAR_CONFIG={
-            'ALLOW_TOOLBAR_CALLBACK': lambda request: False,
-        }):
-            response = self.client.post(url, data)
-            self.assertEqual(response.status_code, 404)
-            response = self.client.post(
-                url, data, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
-            )
-            self.assertEqual(response.status_code, 404)
+        self.check_require_allow_toolbar(self.client.post, url, data)
 
     def test_sql_profile_checks_allow_toolbar(self):
         url = "/__debug__/sql_profile/"
@@ -222,19 +189,7 @@ class DebugToolbarIntegrationTestCase(TestCase):
             "hash": "6e12daa636b8c9a8be993307135458f90a877606",
         }
 
-        response = self.client.post(url, data)
-        self.assertEqual(response.status_code, 200)
-        response = self.client.post(url, data, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
-        self.assertEqual(response.status_code, 200)
-        with self.settings(DEBUG_TOOLBAR_CONFIG={
-            'ALLOW_TOOLBAR_CALLBACK': lambda request: False,
-        }):
-            response = self.client.post(url, data)
-            self.assertEqual(response.status_code, 404)
-            response = self.client.post(
-                url, data, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
-            )
-            self.assertEqual(response.status_code, 404)
+        self.check_require_allow_toolbar(self.client.post, url, data)
 
     @override_settings(DEBUG_TOOLBAR_CONFIG={"RENDER_PANELS": True})
     def test_data_store_id_not_rendered_when_none(self):
